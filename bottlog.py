@@ -14,8 +14,16 @@ def apache_logger(callback):
         log_data.append('"%s %s %s"' % (bottle.request.method, bottle.request.path, bottle.request.environ.get("SERVER_PROTOCOL", "")))
         log_data.append(str(bottle.response.status_code))
         log_data.append(str(len(body) if not isinstance(body, bottle.HTTPResponse) else 0))
-        log_data.append("\"%s\"" % bottle.request.get_header("Referer", "-"))
-        log_data.append("\"%s\"" % bottle.request.get_header("User-Agent", "-"))
+
+        referer = bottle.request.get_header("Referer", "-")
+        if referer != "-":
+            referer = "\"%s\"" % referer
+        log_data.append(referer)
+
+        user_agent = bottle.request.get_header("User-Agent", "-")
+        if user_agent != "-":
+            user_agent = "\"%s\"" % user_agent
+        log_data.append(user_agent)
 
         with open("server.log", "a+") as log_file:
             log_file.write(" ".join(log_data) + "\n")
@@ -24,8 +32,8 @@ def apache_logger(callback):
 
     return wrapper
 
-def common_logger(callback):
-    """Logs in the common log format"""
+def apache_logger(callback):
+    """Logs in the combined log format"""
     def wrapper(*args, **kwargs):
         body = callback(*args, **kwargs)
 
