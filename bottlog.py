@@ -16,7 +16,7 @@ def apache_logger(callback):
         log_data.append(bottle.request.get_header("User-Agent", "-"))
 
         with open("server.log", "a+") as log_file:
-            log_file.writeline(" ".join(log_data))
+            log_file.write(" ".join(log_data) + "\n")
 
     return wrapper
 
@@ -33,6 +33,6 @@ def common_logger(callback):
         log_data.append("-") #TODO: Fix content-length
 
         with open("server.log", "a+") as log_file:
-            log_file.writeline(" ".join(log_data))
+            log_file.write(" ".join(log_data) + "\n")
 
     return wrapper
